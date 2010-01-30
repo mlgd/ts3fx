@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" currentState="Login" xmlns:ns1="composants.*">
+	<mx:states>
+		<mx:State name="Login">
+			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
+				<ns1:Login horizontalCenter="0" verticalCenter="49">
+				</ns1:Login>
+			</mx:AddChild>
+		</mx:State>
+	</mx:states>
+
+    
+	<mx:Script>
+		<![CDATA[
+			[Bindable] private var locales:Array = [ "fr_FR","en_US" ];
+		]]>
+	</mx:Script>
+	<mx:Canvas width="900" horizontalCenter="0" top="0" bottom="0" backgroundColor="#FFFFFF" id="canvas1">
+		<mx:Image source="images/fond.jpg" left="0" right="0" top="0" bottom="0" smoothBitmapContent="true" scaleContent="false" alpha="0.40"/>
+		<mx:Image x="10" y="10" width="90" height="120" source="images/logo.png"/>
+	</mx:Canvas>
+	
+</mx:Application>
