@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="690" height="300"
+	borderAlpha="0.8" shadowDistance="0" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0"
+	title="{resourceManager.getString('ListServers','title')}"
+	addedToStage="Initialize()" removedFromStage="Reset()">
+
+	<mx:Metadata>
+		[Event(name="selectServer")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.utils.ObjectUtil;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.events.FaultEvent;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] private var _data:ArrayCollection = new ArrayCollection();
+			 
+			public function Initialize():void {
+				variables.amf.source = "ts3.ts3";
+				variables.amf.executeService("list_servers",ServiceListServers_Result,ServiceListServers_Fault);
+			}
+			private function Reset():void {
+				_data.removeAll();
+				BTN_Start.enabled = false;
+				BTN_Stop.enabled = false;
+				BTN_Delete.enabled = false;
+			}
+
+			private function ServiceListServers_Result(event:ResultEvent):void {
+				if (event.result != false) {
+					Reset();
+					_data = new ArrayCollection(event.result as Array);
+				}
+			}
+			private function ServiceListServers_Fault(event:FaultEvent):void {
+			}
+			
+			private function ServiceStartStopServer_Result(event:ResultEvent):void {
+				if (event.result != false) {
+					var server:Object = event.result as Object;
+					for (var i:int = 0 ; i < _data.length ; i++) {
+						if (_data[i].id == server.id) {
+							_data.setItemAt(server,i);
+							if (DG_Data.selectedItem.id == server.id) {
+								DG_Data_ItemClick();
+							}
+							break;
+						}
+					}
+				}
+			}
+			private function ServiceStartStopServer_Fault(event:FaultEvent):void {
+			}
+
+			private function DG_Data_Status_Label(item:Object, column:DataGridColumn):String {
+				if (item) {
+					return resourceManager.getString('ListServers',item.status);
+				}
+				return "";
+			}
+			private function DG_Data_Clients_Label(item:Object, column:DataGridColumn):String {
+				if (item) {
+					return item.clients_connected+"/"+item.clients_total;
+				}
+				return "";
+			}
+			
+			private function DG_Data_ItemClick():void {
+				var item:Object = DG_Data.selectedItem;
+				if (item) {
+					BTN_Delete.enabled = true;
+					switch (item.status) {
+						case "online" :
+							BTN_Start.enabled = false;
+							BTN_Stop.enabled = true;
+							break;
+						case "none", "virtual" :
+							BTN_Start.enabled = true;
+							BTN_Stop.enabled = false;
+							break;
+					}
+				} else {
+					BTN_Start.enabled = false;
+					BTN_Stop.enabled = false;
+					BTN_Delete.enabled = false;
+				}
+			}
+			private function DG_Data_DoubleClick():void {
+				var item:Object = DG_Data.selectedItem;
+				if (item) {
+					var event:Event = new Event("selectServer");
+					dispatchEvent(event);
+				}
+			}
+			private function BTN_Start_Click():void {
+				var item:Object = DG_Data.selectedItem;
+				if (item) {
+					var param:Object = {id: item.id};
+					variables.amf.source = "ts3.ts3";
+					variables.amf.executeService("start_server",ServiceStartStopServer_Result,ServiceStartStopServer_Fault,param);
+				}
+			}
+			private function BTN_Stop_Click():void {
+				var item:Object = DG_Data.selectedItem;
+				if (item) {
+					var param:Object = {id: item.id};
+					variables.amf.source = "ts3.ts3";
+					variables.amf.executeService("stop_server",ServiceStartStopServer_Result,ServiceStartStopServer_Fault,param);
+				}
+			}
+			private function BTN_Delete_Click():void {
+				
+			}
+		]]>
+	</mx:Script>
+	<mx:DataGrid id="DG_Data" right="10" left="10" top="10" bottom="40" dataProvider="{_data}" resizableColumns="false" draggableColumns="false"
+		doubleClickEnabled="true" itemClick="DG_Data_ItemClick()" doubleClick="DG_Data_DoubleClick()">
+		<mx:columns>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','id')}" dataField="id" textAlign="center" width="8"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','name')}" dataField="name" width="37"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','port')}" dataField="port" textAlign="right" width="10"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','status')}" textAlign="center" width="15" labelFunction="DG_Data_Status_Label"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','uptime')}" dataField="uptime" textAlign="right" width="15"/>
+			<mx:DataGridColumn headerText="{resourceManager.getString('ListServers','clients')}" labelFunction="DG_Data_Clients_Label" textAlign="right" width="15"/>
+		</mx:columns>
+	</mx:DataGrid>
+	<mx:HBox horizontalAlign="right" bottom="10" left="10" right="10">
+		<mx:Button label="{resourceManager.getString('ListServers','start')}" id="BTN_Start" click="BTN_Start_Click()" enabled="false"/>
+		<mx:Button label="{resourceManager.getString('ListServers','stop')}" click="BTN_Stop_Click()" id="BTN_Stop" enabled="false"/>
+		<mx:Button label="{resourceManager.getString('ListServers','delete')}" id="BTN_Delete" click="BTN_Delete_Click()" enabled="false"/>
+	</mx:HBox>
+			
+</mx:Panel>

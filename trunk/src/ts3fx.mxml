@@ -1,23 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" currentState="Login" xmlns:ns1="composants.*">
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" currentState="Login"
+	horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	minWidth="900"
+	minHeight="500"
+	xmlns:ns1="components.*"
+	initialize="Initialize()">
+    
+	<mx:Metadata>
+		[ResourceBundle("AdapterTraffic")]
+		[ResourceBundle("Application")]
+		[ResourceBundle("ListServers")]
+		[ResourceBundle("LoginForm")]
+		[ResourceBundle("MainMenu")]
+		[ResourceBundle("ServerMenu")]
+		[ResourceBundle("Status")]
+	</mx:Metadata>
+
+	<mx:Style source="styles.css"/>
+	
+	<mx:Script>
+		<![CDATA[
+			import components.AdapterTraffic;
+			import fr.viridian.amf.RemoteObjectAMF;
+			import mx.events.ResourceEvent;
+			
+			[Bindable] private var _locales:Array = [ "fr_FR", "en_US" ];
+			[Bindable] private var _languages:Array = [ "Français", "English" ];
+			
+			private function Initialize():void {
+				var loader:URLLoader = new URLLoader();
+				loader.addEventListener(Event.COMPLETE, LoadConfig_Complete);
+				loader.load(new URLRequest("config.xml"));
+			}
+			private function LoadConfig_Complete(event:Event):void {
+				var xml:XML = new XML(event.target.data);
+				
+				variables.amf = new RemoteObjectAMF("amf");
+				variables.amf.url = xml.amf_url;
+				if (xml.amf_timeout) {
+					variables.amf.requestTimeout = Number(xml.amf_timeout);
+				}
+			}
+			
+			private function CB_Language_Change():void {
+				resourceManager.localeChain = [ _locales[CB_Language.selectedIndex] ];
+			}
+			
+			private function COMP_Login_Login():void {
+				this.currentState = "Admin";
+			}
+			
+			private function COMP_Status_Logout():void {
+				COMP_Login.Reset();
+				this.currentState = "Login";
+			}
+			
+			private function COMP_MainMenu_ListServers():void {
+				VS_Navigation.selectedChild = ListServers;
+				try {
+					COMP_ListServers.Initialize();
+				}
+				catch (e:Error) {}
+			}
+			private function COMP_MainMenu_CreateServer():void {
+				VS_Navigation.selectedChild = CreateServer;
+			}
+			private function COMP_MainMenu_Traffic():void {
+				VS_Navigation.selectedChild = AdapterTraffic;
+			}
+			
+			private function COMP_ListServers_SelectServer():void {
+				
+			}
+		]]>
+	</mx:Script>
+
 	<mx:states>
 		<mx:State name="Login">
 			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
-				<ns1:Login horizontalCenter="0" verticalCenter="49">
+				<ns1:Login id="COMP_Login" horizontalCenter="0" verticalCenter="49" login="COMP_Login_Login()">
 				</ns1:Login>
+			</mx:AddChild>
+		</mx:State>
+		<mx:State name="Admin">
+			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
+				<ns1:Status id="COMP_Status" y="78" right="0" logout="COMP_Status_Logout()">
+				</ns1:Status>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
+				<ns1:MainMenu id="COMP_MainMenu" x="10" y="140"
+					menuListServers="COMP_MainMenu_ListServers()"
+					menuCreateServer="COMP_MainMenu_CreateServer()"
+					menuTraffic="COMP_MainMenu_Traffic()">
+				</ns1:MainMenu>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
+				<mx:ViewStack id="VS_Navigation" top="140" bottom="26" right="10" left="200">
+					<mx:Canvas id="ListServers" label="ListServers" width="100%" height="100%">
+						<ns1:ListServers id="COMP_ListServers" y="0" left="0" right="0" selectServer="COMP_ListServers_SelectServer()">
+						</ns1:ListServers>
+					</mx:Canvas>
+					<mx:Canvas id="CreateServer" label="CreateServer" width="100%" height="100%">
+					</mx:Canvas>
+					<mx:Canvas id="AdapterTraffic" label="AdapterTraffic" width="100%" height="100%">
+						<ns1:AdapterTraffic y="0" right="0" left="0">
+						</ns1:AdapterTraffic>
+					</mx:Canvas>
+				</mx:ViewStack>
+			</mx:AddChild>
+			<mx:AddChild relativeTo="{canvas1}" position="lastChild">
+				<ns1:ServerMenu x="10" y="278" height="213">
+				</ns1:ServerMenu>
 			</mx:AddChild>
 		</mx:State>
 	</mx:states>
 
-    
-	<mx:Script>
-		<![CDATA[
-			[Bindable] private var locales:Array = [ "fr_FR","en_US" ];
-		]]>
-	</mx:Script>
-	<mx:Canvas width="900" horizontalCenter="0" top="0" bottom="0" backgroundColor="#FFFFFF" id="canvas1">
-		<mx:Image source="images/fond.jpg" left="0" right="0" top="0" bottom="0" smoothBitmapContent="true" scaleContent="false" alpha="0.40"/>
-		<mx:Image x="10" y="10" width="90" height="120" source="images/logo.png"/>
+	<mx:Canvas width="900" horizontalCenter="0" top="0" bottom="0" backgroundColor="#FFFFFF" id="canvas1" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+		<mx:Image source="images/fond.jpg" left="0" right="0" top="0" bottom="0" smoothBitmapContent="true" scaleContent="false" alpha="0.50"/>
+		<mx:Image x="10" y="10" width="90" height="120" source="images/logo.png" id="image1"/>
+		<mx:ComboBox y="10" width="100" id="CB_Language" dataProvider="{_languages}" change="CB_Language_Change()" right="10"/>
+		<mx:Label text="{resourceManager.getString('Application','legal')}" bottom="0" left="10" right="10" textAlign="center"/>
 	</mx:Canvas>
 	
 </mx:Application>
