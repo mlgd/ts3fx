@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="182" height="130"
+	borderAlpha="0.8" shadowDistance="0" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	borderThicknessBottom="0" borderThicknessLeft="0" borderThicknessRight="0" borderThicknessTop="0"
+	title="{resourceManager.getString('MainMenu','title')}"
+	addedToStage="Initialize()">
+	
+	<mx:Metadata>
+		[Event(name="menuListServers")]
+		[Event(name="menuCreateServer")]
+		[Event(name="menuTraffic")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			private function Initialize():void {
+				BTN_ListServers_Click();
+			}
+			
+			private function BTN_ListServers_Click():void {
+				var event:Event = new Event("menuListServers");
+				dispatchEvent(event);
+			}
+			private function BTN_CreateServer_Click():void {
+				var event:Event = new Event("menuCreateServer");
+				dispatchEvent(event);
+			}
+			private function BTN_Traffic_Click():void {
+				var event:Event = new Event("menuTraffic");
+				dispatchEvent(event);
+			}
+		]]>
+	</mx:Script>
+
+	<mx:LinkButton x="10" y="10" label="Liste des serveurs" width="162" id="BTN_ListServers" click="BTN_ListServers_Click()"/>
+	<mx:LinkButton x="10" y="40" label="Créer un serveur" width="162" id="BTN_CreateServer" click="BTN_CreateServer_Click()"/>
+	<mx:LinkButton x="10" label="Traffic" width="162" y="70" id="BTN_Traffic" click="BTN_Traffic_Click()"/>
+	
+</mx:Panel>

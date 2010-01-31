@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="360" height="202"
+	borderAlpha="0.8" horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	title="{resourceManager.getString('LoginForm','login')}"
+	defaultButton="{BTN_Connect}"
+	addedToStage="Initialize()">
+
+	<mx:Metadata>
+		[Event(name="login")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			private function Initialize():void {
+				var so:SharedObject = SharedObject.getLocal("ts3fx");
+				try {
+					TI_ServerQueryHost.text = so.data.serverquery_host;
+					TI_ServerQueryPort.text = so.data.serverquery_port;
+					TI_Username.text = so.data.username;
+					TI_Password.text = so.data.password;
+				} catch (error:Error) {
+					
+				} 
+			}
+			public function Reset():void {
+				TI_Username.text = "";
+				TI_Password.text = "";
+			} 
+
+			private function ServiceLogin_Result(event:ResultEvent):void {
+				if (!event.result) {
+					Alert.show(resourceManager.getString('LoginForm','incorrect_login'));
+				} else {
+					var so:SharedObject = SharedObject.getLocal("ts3fx");
+					try {
+						so.data.serverquery_host = TI_ServerQueryHost.text;
+						so.data.serverquery_port = TI_ServerQueryPort.text;
+						so.data.username = TI_Username.text;
+						so.data.password = TI_Password.text;
+						so.flush();
+					} catch (error:Error) {
+						
+					} 
+					var e:Event = new Event("login");
+					dispatchEvent(e);
+				}
+			}
+			private function ServiceLogin_Fault(event:FaultEvent):void {
+				Alert.show(event.fault.toString());
+			}
+
+			private function BTN_Connect_Click():void {
+				var params:Object;
+				
+				if (TI_ServerQueryHost.text == "") {
+					
+				}
+				
+				params = {serverquery_host: TI_ServerQueryHost.text,
+									serverquery_port: TI_ServerQueryPort.text,
+									username: TI_Username.text,
+									password: TI_Password.text};
+				variables.amf.source = "ts3.ts3";
+				//variables.amf.showBusyCursor = true;
+				variables.amf.executeService("login",ServiceLogin_Result,ServiceLogin_Fault,params);
+			}
+		]]>
+	</mx:Script>
+	<mx:Form left="10" right="10" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" y="10">
+		<mx:FormItem label="{resourceManager.getString('LoginForm','serverquery_host')}" width="100%" required="true">
+			<mx:TextInput id="TI_ServerQueryHost" width="100%"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('LoginForm','serverquery_port')}" required="true">
+			<mx:TextInput id="TI_ServerQueryPort" width="50" maxChars="5"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('LoginForm','username')}" required="true">
+			<mx:TextInput id="TI_Username" width="100%"/>
+		</mx:FormItem>
+		<mx:FormItem label="{resourceManager.getString('LoginForm','password')}" required="true">
+			<mx:TextInput id="TI_Password" displayAsPassword="true" width="100%"/>
+		</mx:FormItem>
+	</mx:Form>
+	<mx:ControlBar horizontalAlign="right">
+		<mx:Button label="{resourceManager.getString('LoginForm','connect')}" id="BTN_Connect" click="BTN_Connect_Click()"/>
+	</mx:ControlBar>
+	
+</mx:Panel>

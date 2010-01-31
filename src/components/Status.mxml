@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="700" height="53"
+	horizontalScrollPolicy="off" verticalScrollPolicy="off"
+	addedToStage="Initialize()" removedFromStage="Reset()">
+
+	<mx:Metadata>
+		[Event(name="logout")]
+	</mx:Metadata>
+
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			
+			[Bindable] private var _adapter_host:String = "";
+			[Bindable] private var _adapter_port:String = "";
+			[Bindable] private var _adapter_version:String = "";
+			[Bindable] private var _adapter_build:String = "";
+			[Bindable] private var _adapter_platform:String = "";
+			[Bindable] private var _user:String = "";
+			
+			private function Initialize():void {
+				variables.amf.source = "ts3.ts3";
+				//variables.amf.showBusyCursor = true;
+				variables.amf.executeService("adapter_info",ServiceAdapterInfo_Result,ServiceAdapterInfo_Fault);
+			}
+			private function Reset():void {
+				_adapter_host = "";
+				_adapter_port = "";
+				_adapter_version = "";
+				_adapter_build = "";
+				_adapter_platform = "";
+				_user = "";
+			}
+			
+			private function ServiceAdapterInfo_Result(event:ResultEvent):void {
+				if (!event.result) {
+					Alert.show("Erreur de connection au serveur.");
+				} else {
+					_adapter_host = event.result.host;
+					_adapter_port = event.result.port;
+					_adapter_version = event.result.version;
+					_adapter_build = event.result.build;
+					_adapter_platform = event.result.platform;
+					_user = event.result.user;
+				} 
+			}
+			private function ServiceAdapterInfo_Fault(event:FaultEvent):void {
+				
+			}
+			
+			private function BTN_Disconnect_Click():void {
+				var event:Event = new Event("logout");
+				dispatchEvent(event);
+			}
+		]]>
+	</mx:Script>
+	<mx:Canvas y="26" right="-4" left="0" borderStyle="solid" backgroundColor="#FFFFFF" borderColor="#313131" cornerRadius="3" height="26">
+		
+		<mx:HBox y="0" height="100%" verticalAlign="middle" left="4" right="4">
+			<mx:HBox width="100%" height="100%" verticalAlign="middle" horizontalGap="0">
+				<mx:Label htmlText="{resourceManager.getString('Status','user')+' : &lt;b&gt;'+_user+'&lt;/b&gt;'}"/>
+				<mx:Label text="-" width="10" textAlign="center"/>
+				<mx:Label htmlText="{resourceManager.getString('Status','adapter')+' : &lt;b&gt;'+_adapter_host+':'+_adapter_port+'&lt;/b&gt;'}"/>
+			</mx:HBox>
+			<mx:LinkButton label="{resourceManager.getString('Status','logout')}" id="BTN_Disconnect" click="BTN_Disconnect_Click()"/>
+		</mx:HBox>
+	</mx:Canvas>
+	<mx:HBox x="0" y="0" width="100%" horizontalAlign="right" horizontalGap="0">
+		<mx:Label text="{resourceManager.getString('Status','version')+' '+_adapter_version}"/>
+		<mx:Label text="-" width="10" textAlign="center"/>
+		<mx:Label text="{resourceManager.getString('Status','build')+' '+_adapter_build}"/>
+		<mx:Label text="-" width="10" textAlign="center"/>
+		<mx:Label text="{resourceManager.getString('Status','platform')+' '+_adapter_platform}"/>
+	</mx:HBox>
+	
+</mx:Canvas>
