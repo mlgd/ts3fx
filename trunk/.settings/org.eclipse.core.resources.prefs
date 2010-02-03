@@ -1,14 +1,12 @@
-#Sat Jan 30 22:09:32 CET 2010
+#Sun Jan 31 02:26:27 CET 2010
 eclipse.preferences.version=1
 encoding//src/locale/en_US/AdapterTraffic.properties=UTF-8
 encoding//src/locale/en_US/Application.properties=UTF-8
 encoding//src/locale/en_US/ListServers.properties=UTF-8
-encoding//src/locale/en_US/LoginForm.properties=UTF-8
 encoding//src/locale/en_US/MainMenu.properties=UTF-8
 encoding//src/locale/en_US/Status.properties=UTF-8
 encoding//src/locale/fr_FR/AdapterTraffic.properties=UTF-8
 encoding//src/locale/fr_FR/Application.properties=UTF-8
 encoding//src/locale/fr_FR/ListServers.properties=UTF-8
-encoding//src/locale/fr_FR/LoginForm.properties=UTF-8
 encoding//src/locale/fr_FR/Status.properties=UTF-8
 encoding/<project>=utf-8

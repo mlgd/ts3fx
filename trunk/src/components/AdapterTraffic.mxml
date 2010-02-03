@@ -80,7 +80,8 @@
 		]]>
 	</mx:Script>
 	
-	<mx:DataGrid id="DG_Data" height="222" dataProvider="{_data}" right="10" left="10" bottom="40" draggableColumns="false" resizableColumns="false">
+	<mx:DataGrid id="DG_Data" height="222" dataProvider="{_data}" right="10" left="10" bottom="40" draggableColumns="false" resizableColumns="false"
+		selectable="false">
 		<mx:columns>
 			<mx:DataGridColumn headerText="" dataField="name" labelFunction="DG_Data_Name_Label" width="70"/>
 			<mx:DataGridColumn id="DGC_Incoming" headerText="{resourceManager.getString('AdapterTraffic','incoming')}" dataField="incoming"
