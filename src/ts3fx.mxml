@@ -10,7 +10,7 @@
 		[ResourceBundle("AdapterTraffic")]
 		[ResourceBundle("Application")]
 		[ResourceBundle("ListServers")]
-		[ResourceBundle("LoginForm")]
+		[ResourceBundle("Login")]
 		[ResourceBundle("MainMenu")]
 		[ResourceBundle("ServerMenu")]
 		[ResourceBundle("Status")]

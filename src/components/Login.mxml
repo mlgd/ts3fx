@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="absolute" width="360" height="202"
 	borderAlpha="0.8" horizontalScrollPolicy="off" verticalScrollPolicy="off"
-	title="{resourceManager.getString('LoginForm','login')}"
+	title="{resourceManager.getString('Login','login')}"
 	defaultButton="{BTN_Connect}"
 	addedToStage="Initialize()">
 
@@ -33,7 +33,7 @@
 
 			private function ServiceLogin_Result(event:ResultEvent):void {
 				if (!event.result) {
-					Alert.show(resourceManager.getString('LoginForm','incorrect_login'));
+					Alert.show(resourceManager.getString('Login','incorrect_login'));
 				} else {
 					var so:SharedObject = SharedObject.getLocal("ts3fx");
 					try {
@@ -71,21 +71,21 @@
 		]]>
 	</mx:Script>
 	<mx:Form left="10" right="10" paddingBottom="0" paddingLeft="0" paddingRight="0" paddingTop="0" y="10">
-		<mx:FormItem label="{resourceManager.getString('LoginForm','serverquery_host')}" width="100%" required="true">
-			<mx:TextInput id="TI_ServerQueryHost" width="100%"/>
+		<mx:FormItem label="{resourceManager.getString('Login','serverquery_host')}" width="100%" required="true">
+			<mx:TextInput id="TI_ServerQueryHost" width="100%" enabled="false"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('LoginForm','serverquery_port')}" required="true">
+		<mx:FormItem label="{resourceManager.getString('Login','serverquery_port')}" required="true">
 			<mx:TextInput id="TI_ServerQueryPort" width="50" maxChars="5"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('LoginForm','username')}" required="true">
+		<mx:FormItem label="{resourceManager.getString('Login','username')}" required="true">
 			<mx:TextInput id="TI_Username" width="100%"/>
 		</mx:FormItem>
-		<mx:FormItem label="{resourceManager.getString('LoginForm','password')}" required="true">
+		<mx:FormItem label="{resourceManager.getString('Login','password')}" required="true">
 			<mx:TextInput id="TI_Password" displayAsPassword="true" width="100%"/>
 		</mx:FormItem>
 	</mx:Form>
 	<mx:ControlBar horizontalAlign="right">
-		<mx:Button label="{resourceManager.getString('LoginForm','connect')}" id="BTN_Connect" click="BTN_Connect_Click()"/>
+		<mx:Button label="{resourceManager.getString('Login','connect')}" id="BTN_Connect" click="BTN_Connect_Click()"/>
 	</mx:ControlBar>
 	
 </mx:Panel>
