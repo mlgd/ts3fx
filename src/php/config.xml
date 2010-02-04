@@ -1,0 +1,4 @@
+<configuration>
+	<amf_url>http://localhost/ts3fx/amfphp/gateway.php</amf_url>
+	<amf_timeout>10</amf_timeout>
+</configuration>
